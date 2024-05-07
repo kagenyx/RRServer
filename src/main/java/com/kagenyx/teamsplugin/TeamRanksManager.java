@@ -6,8 +6,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.UUID;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -29,9 +27,9 @@ public class TeamRanksManager {
                 file.createNewFile();
                 // Initialize with default values
                 JSONObject defaultRanks = new JSONObject();
-                defaultRanks.put("TribunalRank", 0);
-                defaultRanks.put("ArcanaRank", 0);
-                defaultRanks.put("KarmaRank", 0);
+                defaultRanks.put("TribunalRank", 1);
+                defaultRanks.put("ArcanaRank", 1);
+                defaultRanks.put("KarmaRank", 1);
                 FileWriter writer = new FileWriter(file);
                 writer.write(defaultRanks.toJSONString());
                 writer.close();
@@ -50,7 +48,7 @@ public class TeamRanksManager {
     }
 
     public int getTeamRank(String teamName) {
-        return ((Long) json.getOrDefault(teamName + "Rank", 0L)).intValue();
+        return ((Long) json.getOrDefault(teamName + "Rank", 1L)).intValue();
     }
 
     public void setTeamRank(String teamName, int rank) {
