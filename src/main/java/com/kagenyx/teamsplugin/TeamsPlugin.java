@@ -8,7 +8,7 @@ public final class TeamsPlugin extends JavaPlugin {
     private TeamRanksManager trm;
     @Override
     public void onEnable() {
-        getCommand("rank").setExecutor(new RankCommand());
+        getCommand("rankup").setExecutor(new RankCommand());
         trm = new TeamRanksManager(this);
     }
 
