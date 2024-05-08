@@ -1,9 +1,13 @@
 {
-    "Tribunal":["KageNyX","Kirumototep"],
-    "Arcana": ["GongonBonbon"],
-    "Karma": ["RodryTheOne"],
+    "Tribunal":[],
+    "Arcana": [],
+    "Karma": [],
 
     "TribunalRank" : 1,
     "ArcanaRank" : 1,
-    "KarmaRank" : 1
+    "KarmaRank" : 1,
+
+    "TribunalDisplay" : {},
+    "ArcanaDisplay" : {},
+    "KarmaDisplay" : {}
 }

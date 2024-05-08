@@ -6,7 +6,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.UUID;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -54,6 +56,19 @@ public class TeamRanksManager {
     public void setTeamRank(String teamName, int rank) {
         json.put(teamName + "Rank", rank);
         saveToFile();
+    }
+
+    public UUID getTeamLeader(String teamName) { return (UUID) json.get(teamName + "Leader"); }
+
+    public String getPlayerTeam(UUID playerUUID) {
+        for (Object key : json.keySet()) {
+            String teamName = (String) key;
+            JSONArray members = (JSONArray) json.get(teamName);
+            if (members.contains(playerUUID.toString())) {
+                return teamName;
+            }
+        }
+        return null;
     }
 
     private void saveToFile() {
