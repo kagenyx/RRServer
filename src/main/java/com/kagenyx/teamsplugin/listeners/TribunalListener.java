@@ -12,6 +12,10 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
 
 import java.util.Random;
 
@@ -89,7 +93,7 @@ public class TribunalListener implements Listener {
                         }
                         break;
                     case 3:
-                        if(player.getUniqueId().equals(trm.getTeamLeader("Tribunal"))) {
+                        if(player.getUniqueId().equals(trm.getTeamLeader(TEAM_NAME))) {
                             player.getWorld().dropItemNaturally(block.getLocation(),is);
                             break;
                         }
@@ -105,5 +109,20 @@ public class TribunalListener implements Listener {
     }
 
     //Stick
+    @EventHandler
+    public void onStickHit (EntityDamageByEntityEvent e) {
+        if (e.getEntity() instanceof Player && e.getDamager() instanceof Entity ) {
+            Player hit = (Player) e.getEntity();
+            Player hitten = (Player) e.getDamager();
+
+            if(trm.getPlayerTeam(hitten.getUniqueId()).equals(trm.getPlayerTeam(hit.getUniqueId())) && hit.getInventory().getItemInMainHand().getItemMeta().getLocalizedName() != null && hit.getInventory().getItemInMainHand().getItemMeta().getLocalizedName().equals("TribunalStick")) {
+                PotionEffect exitingEffect = hitten.getPotionEffect(PotionEffectType.SPEED);
+                if(exitingEffect != null && exitingEffect.getDuration() < 200) {
+                    hitten.addPotionEffect(new PotionEffect(PotionEffectType.SPEED,exitingEffect.getDuration() + 100,0));
+                }
+            }
+        }
+    }
+
 
 }

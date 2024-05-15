@@ -6,6 +6,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 import org.json.simple.JSONArray;
@@ -57,6 +60,31 @@ public class TeamRanksManager {
         json.put(teamName + "Rank", rank);
         saveToFile();
     }
+
+    public LinkedList<UUID> extractUUIDs(String teamName) {
+        LinkedList<UUID> uuids = new LinkedList<>();
+
+        // Read the JSON file and parse it
+        JSONParser parser = new JSONParser();
+        try {
+            FileReader reader = new FileReader("teams.json"); // Replace "teams.json" with your actual file path
+            JSONObject jsonData = (JSONObject) parser.parse(reader);
+
+            // Check if the team name exists in the JSON data
+            if (jsonData.containsKey(teamName)) {
+                JSONArray uuidArray = (JSONArray) jsonData.get(teamName);
+                for (Object uuidObj : uuidArray) {
+                    String uuidString = (String) uuidObj;
+                    uuids.add(UUID.fromString(uuidString));
+                }
+            }
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+
+        return uuids;
+    }
+
 
     public UUID getTeamLeader(String teamName) { return (UUID) json.get(teamName + "Leader"); }
 
