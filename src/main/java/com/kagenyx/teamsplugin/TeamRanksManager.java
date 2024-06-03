@@ -26,7 +26,7 @@ public class TeamRanksManager {
             main.getDataFolder().mkdir();
         }
 
-        file = new File(main.getDataFolder(), "TeamsRank.json");
+        file = new File(main.getDataFolder(), "Teams.json");
         if (!file.exists()) {
             try {
                 file.createNewFile();
@@ -47,6 +47,7 @@ public class TeamRanksManager {
         try {
             FileReader reader = new FileReader(file);
             json = (JSONObject) parser.parse(reader);
+            reader.close();
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
@@ -67,8 +68,9 @@ public class TeamRanksManager {
         // Read the JSON file and parse it
         JSONParser parser = new JSONParser();
         try {
-            FileReader reader = new FileReader("teams.json"); // Replace "teams.json" with your actual file path
+            FileReader reader = new FileReader(file); // Use the correct file path
             JSONObject jsonData = (JSONObject) parser.parse(reader);
+            reader.close();
 
             // Check if the team name exists in the JSON data
             if (jsonData.containsKey(teamName)) {
@@ -85,17 +87,25 @@ public class TeamRanksManager {
         return uuids;
     }
 
+    public UUID getTeamLeader(String teamName) {
+        String uuidString = (String) json.get(teamName + "Leader");
+        return UUID.fromString(uuidString);
+    }
 
-    public UUID getTeamLeader(String teamName) { return (UUID) json.get(teamName + "Leader"); }
-
-    public String getPlayerTeam(UUID playerUUID) {
+    public String getPlayerTeam(UUID uuid) {
         for (Object key : json.keySet()) {
             String teamName = (String) key;
-            JSONArray members = (JSONArray) json.get(teamName);
-            if (members.contains(playerUUID.toString())) {
-                return teamName;
+            Object teamMembersObj = json.get(teamName);
+            if (teamMembersObj instanceof JSONArray) {
+                JSONArray teamMembers = (JSONArray) teamMembersObj;
+                for (Object member : teamMembers) {
+                    if (member.toString().equals(uuid.toString())) {
+                        return teamName;
+                    }
+                }
             }
         }
+
         return null;
     }
 

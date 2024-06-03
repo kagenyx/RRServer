@@ -1,5 +1,9 @@
 {
   "Tribunal":["58ea18dd-e2ca-40cb-95cf-5ad5a4db3da7","090e4580-d506-4bac-98cd-c417ca77543a"],
   "Arcana": ["b6d90ead-729e-46ca-8297-4b8b697914ea"],
-  "Karma": ["692cd7b8-a391-4e94-83ba-fd95f28c5a6a"]
+  "Karma": ["692cd7b8-a391-4e94-83ba-fd95f28c5a6a"],
+
+  "TribunalRank": 1,
+  "ArcanaRank": 1,
+  "KarmaRank": 1
 }

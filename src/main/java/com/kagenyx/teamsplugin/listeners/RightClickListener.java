@@ -34,8 +34,12 @@ public class RightClickListener implements Listener {
     }
 
     @EventHandler
-    public void onRightClick (PlayerInteractEvent e) {
+    public void onRightClick(PlayerInteractEvent e) {
         Player p = e.getPlayer();
+
+        if (e.getClickedBlock() == null) {
+            return; // Prevent NullPointerException if no block is clicked
+        }
 
         Material clickedBlock = e.getClickedBlock().getType();
         if (e.getAction().name().contains("RIGHT_CLICK_BLOCK") && clickedBlock == Material.WHITE_BANNER && e.getHand() == EquipmentSlot.HAND) {
@@ -50,28 +54,28 @@ public class RightClickListener implements Listener {
 
             ItemStack is = new ItemStack(Material.SHIELD);
             ItemMeta im = is.getItemMeta();
-            im.addAttributeModifier(Attribute.GENERIC_KNOCKBACK_RESISTANCE,new AttributeModifier(UUID.randomUUID(),
-                    "generic.knockback_resistance",2,
-                    AttributeModifier.Operation.ADD_NUMBER,EquipmentSlot.OFF_HAND));
+            im.addAttributeModifier(Attribute.GENERIC_KNOCKBACK_RESISTANCE, new AttributeModifier(UUID.randomUUID(),
+                    "generic.knockback_resistance", 2,
+                    AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.OFF_HAND));
             is.setItemMeta(im);
 
             p.getInventory().addItem(is);
 
-            spawnSmokeEffect(e.getClickedBlock().getLocation(),Particle.SMOKE_NORMAL);
-            p.playSound(p.getLocation(), Sound.ENTITY_EVOKER_PREPARE_WOLOLO,1.0F,1.0F);
+            spawnSmokeEffect(e.getClickedBlock().getLocation(), Particle.SMOKE);
+            p.playSound(p.getLocation(), Sound.ENTITY_EVOKER_PREPARE_WOLOLO, 1.0F, 1.0F);
 
         }
 
         if (e.getAction().name().contains("RIGHT_CLICK_BLOCK") && clickedBlock == Material.CRYING_OBSIDIAN && e.getHand() == EquipmentSlot.HAND) {
-            if(p.getPotionEffect(PotionEffectType.NIGHT_VISION) == null) {
+            if (p.getPotionEffect(PotionEffectType.NIGHT_VISION) == null) {
                 p.sendMessage("Night Vision on!");
-                p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION,999999999,0));
+                p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 999999999, 0));
             } else {
                 p.sendMessage("Night Vision off!");
                 p.removePotionEffect(PotionEffectType.NIGHT_VISION);
             }
-            spawnSmokeEffect(e.getClickedBlock().getLocation(),Particle.DRAGON_BREATH);
-            p.playSound(p.getLocation(), Sound.ENTITY_ILLUSIONER_PREPARE_BLINDNESS,1.0F,1.0F);
+            spawnSmokeEffect(e.getClickedBlock().getLocation(), Particle.DRAGON_BREATH);
+            p.playSound(p.getLocation(), Sound.ENTITY_ILLUSIONER_PREPARE_BLINDNESS, 1.0F, 1.0F);
         }
     }
 
@@ -111,8 +115,8 @@ public class RightClickListener implements Listener {
     }
 
     private void spawnSmokeEffect(Location location, Particle p) {
-        location.setX(location.getX()+0.5);
-        location.setZ(location.getZ()+0.5);
+        location.setX(location.getX() + 0.5);
+        location.setZ(location.getZ() + 0.5);
         new BukkitRunnable() {
             int ticks = 0;
 
