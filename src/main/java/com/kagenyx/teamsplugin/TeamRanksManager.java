@@ -54,7 +54,15 @@ public class TeamRanksManager {
     }
 
     public int getTeamRank(String teamName) {
-        return ((Long) json.getOrDefault(teamName + "Rank", 1L)).intValue();
+        Object value = json.get(teamName + "Rank");
+        if (value instanceof Long) {
+            return ((Long) value).intValue();
+        } else if (value instanceof Integer) {
+            return (Integer) value;
+        } else {
+            System.out.println("Invalid rank value! Returning default value");
+            return 1;
+        }
     }
 
     public void setTeamRank(String teamName, int rank) {

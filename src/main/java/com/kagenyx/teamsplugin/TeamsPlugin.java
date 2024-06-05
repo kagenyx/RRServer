@@ -24,6 +24,7 @@ public final class TeamsPlugin extends JavaPlugin {
     private Calendar lastTimeTribunalDeath;
     private Economy economy;
     private IEssentials essentials;
+    private Map<Player,Calendar> lastTimeArcanaMagic;
 
     @Override
     public void onEnable() {
@@ -32,6 +33,7 @@ public final class TeamsPlugin extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new TribunalListener(this,trm), this);
         Bukkit.getPluginManager().registerEvents(new KeepItemListener(this), this);
         Bukkit.getPluginManager().registerEvents(new RightClickListener(this), this);
+        lastTimeArcanaMagic = new HashMap<>();
 
         setupEconomy();
         essentials = (IEssentials) Bukkit.getServer().getPluginManager().getPlugin("Essentials");
@@ -64,7 +66,7 @@ public final class TeamsPlugin extends JavaPlugin {
                 }
             }
 
-            // Check if Arcana players are together
+            // Check if Tribunal players are together
             for (Player player : tribunal_players) {
                 boolean together = tribunal_players.stream().anyMatch(otherPlayer -> !otherPlayer.equals(player) && otherPlayer.getLocation().distance(player.getLocation()) <= 15);
                 if (together) {
@@ -80,6 +82,16 @@ public final class TeamsPlugin extends JavaPlugin {
                 Player player = Bukkit.getPlayer(uuid);
                 if (player != null) {
                     arcana_players.add(player);
+                    Calendar currentTime = Calendar.getInstance();
+                    long timeDifferenceMillis = currentTime.getTimeInMillis() - lastTimeTribunalDeath.getTimeInMillis();
+                    Double timeDifferenceMinutes = timeDifferenceMillis / (1000.00 * 60.00);
+                    if(!lastTimeArcanaMagic.containsKey(player) || timeDifferenceMinutes > 40) {
+                        player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(18.0);
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.UNLUCK, 43, 0));
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 43, 0));
+                    } else {
+                        player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20.0);
+                    }
                 }
             }
 
@@ -91,6 +103,8 @@ public final class TeamsPlugin extends JavaPlugin {
                     player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 43, 1, true, false, true));
                 }
             }
+
+
         }, 20, 40);
     }
 
@@ -141,5 +155,14 @@ public final class TeamsPlugin extends JavaPlugin {
 
     public IEssentials getEssentials() {
         return essentials;
+    }
+
+    public void setPlayerMagicFood(Player p) {
+        if(this.lastTimeArcanaMagic.containsKey(p)) {
+            this.lastTimeArcanaMagic.remove(p);
+            this.lastTimeArcanaMagic.put(p,Calendar.getInstance());
+        } else {
+            this.lastTimeArcanaMagic.put(p,Calendar.getInstance());
+        }
     }
 }
