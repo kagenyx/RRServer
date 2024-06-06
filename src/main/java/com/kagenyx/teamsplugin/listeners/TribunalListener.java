@@ -81,7 +81,7 @@ public class TribunalListener implements Listener {
     @EventHandler
     public void onBlockBreak (BlockBreakEvent event) {
         Player player = event.getPlayer();
-        if(trm.getPlayerTeam(player.getUniqueId()) == TEAM_NAME) {
+        if(trm.getPlayerTeam(player.getUniqueId()).equals(TEAM_NAME)) {
             if(!player.getActiveItem().containsEnchantment(Enchantment.FORTUNE)) {
                 Random random = new Random();
                 int chance = random.nextInt(100)+1;

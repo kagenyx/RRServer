@@ -28,6 +28,7 @@ public class ArcanaListener implements Listener {
         return m == Material.GOLDEN_APPLE
                 || m == Material.GOLDEN_CARROT
                 || m == Material.CHORUS_FRUIT
-                || m == Material.GLOW_BERRIES;
+                || m == Material.GLOW_BERRIES
+                || m == Material.ENCHANTED_GOLDEN_APPLE;
     }
 }

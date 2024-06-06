@@ -15,7 +15,7 @@ public class RankCommand implements CommandExecutor {
 
     private final TeamsPlugin plugin;
     private final static Double RANKUP_1_COST = 100000.00;
-    private final static Double RANKUP_2_COST = 500000.00;
+    private final static Double RANKUP_2_COST = 800000.00;
 
     public RankCommand(TeamsPlugin plugin) {
         this.plugin = plugin;

@@ -101,7 +101,8 @@ public class TeamRanksManager {
     }
 
     public String getPlayerTeam(UUID uuid) {
-        for (Object key : json.keySet()) {
+        String[] arr = {"Arcana","Tribunal"};
+        for (Object key : arr) {
             String teamName = (String) key;
             Object teamMembersObj = json.get(teamName);
             if (teamMembersObj instanceof JSONArray) {

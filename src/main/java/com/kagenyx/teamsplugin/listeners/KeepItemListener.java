@@ -37,7 +37,7 @@ public class KeepItemListener implements Listener {
                 PersistentDataContainer data = itemMeta.getPersistentDataContainer();
                 if (data.has(key, PersistentDataType.STRING)) {
                     String value = data.get(key, PersistentDataType.STRING);
-                    if ("TribunalStick".equals(value) || "KarmaShard".equals(value) || "ArcanaBow".equals(value)) {
+                    if ("TribunalStick".equals(value) || "ArcanaBow".equals(value)) {
                         e.setCancelled(true);
                     }
                 }
@@ -48,15 +48,29 @@ public class KeepItemListener implements Listener {
     @EventHandler
     public void onDeathEvent(PlayerDeathEvent e) {
         if(plugin.getTrm().getPlayerTeam(e.getPlayer().getUniqueId()).equals("Tribunal")){
-            this.plugin.setLastTimeTribunalDeath(Calendar.getInstance());
+            if(plugin.getTrm().getTeamRank("Tribunal") >= 2) {
+                this.plugin.setLastTimeTribunalDeath(Calendar.getInstance());
+                ItemStack is = new ItemStack(Material.STICK);
+                ItemMeta im = is.getItemMeta();
+                if (im != null) {
+                    PersistentDataContainer data = im.getPersistentDataContainer();
+                    data.set(key, PersistentDataType.STRING, "TribunalStick");
+                    is.setItemMeta(im);
+                    e.getItemsToKeep().add(is);
+                }
+            }
         }
-        ItemStack is = new ItemStack(Material.STICK);
-        ItemMeta im = is.getItemMeta();
-        if (im != null) {
-            PersistentDataContainer data = im.getPersistentDataContainer();
-            data.set(key, PersistentDataType.STRING, "TribunalStick");
-            is.setItemMeta(im);
-            e.getItemsToKeep().add(is);
+        if(plugin.getTrm().getPlayerTeam(e.getPlayer().getUniqueId()).equals("Arcana")){
+            if(plugin.getTrm().getTeamRank("Arcana") >= 2) {
+                ItemStack is = new ItemStack(Material.BOW);
+                ItemMeta im = is.getItemMeta();
+                if (im != null) {
+                    PersistentDataContainer data = im.getPersistentDataContainer();
+                    data.set(key, PersistentDataType.STRING, "ArcanaBow");
+                    is.setItemMeta(im);
+                    e.getItemsToKeep().add(is);
+                }
+            }
         }
     }
 
@@ -71,7 +85,7 @@ public class KeepItemListener implements Listener {
                     PersistentDataContainer data = itemMeta.getPersistentDataContainer();
                     if (data.has(key, PersistentDataType.STRING)) {
                         String value = data.get(key, PersistentDataType.STRING);
-                        if ("TribunalStick".equals(value) || "KarmaShard".equals(value) || "ArcanaBow".equals(value)) {
+                        if ("TribunalStick".equals(value) ||  "ArcanaBow".equals(value)) {
                             e.setCancelled(true);
                         }
                     }
@@ -91,7 +105,7 @@ public class KeepItemListener implements Listener {
                         PersistentDataContainer data = itemMeta.getPersistentDataContainer();
                         if (data.has(key, PersistentDataType.STRING)) {
                             String value = data.get(key, PersistentDataType.STRING);
-                            if ("TribunalStick".equals(value) || "KarmaShard".equals(value) || "ArcanaBow".equals(value)) {
+                            if ("TribunalStick".equals(value) || "ArcanaBow".equals(value)) {
                                 e.setCancelled(true);
                             }
                         }
@@ -106,7 +120,7 @@ public class KeepItemListener implements Listener {
                         PersistentDataContainer data = itemMeta.getPersistentDataContainer();
                         if (data.has(key, PersistentDataType.STRING)) {
                             String value = data.get(key, PersistentDataType.STRING);
-                            if ("TribunalStick".equals(value) || "KarmaShard".equals(value) || "ArcanaBow".equals(value)) {
+                            if ("TribunalStick".equals(value) ||  "ArcanaBow".equals(value)) {
                                 e.setCancelled(true);
                             }
                         }
