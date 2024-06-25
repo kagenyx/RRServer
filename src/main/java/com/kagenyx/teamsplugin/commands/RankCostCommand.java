@@ -32,10 +32,10 @@ public class RankCostCommand implements CommandExecutor {
 
         switch (plugin.getTrm().getTeamRank(plugin.getTrm().getPlayerTeam(p.getUniqueId()))){
             case 1:
-                p.sendMessage("The next update for your team costs " + RANKUP_1_COST + "€") ;
+                p.sendMessage("The next update for your team costs " + RANKUP_1_COST.intValue() + "€") ;
                 break;
             case 2:
-                p.sendMessage("The next update for your team costs " + RANKUP_2_COST + "€") ;
+                p.sendMessage("The next update for your team costs " + RANKUP_2_COST.intValue() + "€") ;
                 break;
             default:
                 p.sendMessage("There's no more upgrades for your team! You are very strong!");

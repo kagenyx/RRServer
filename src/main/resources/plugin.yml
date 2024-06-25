@@ -6,3 +6,6 @@ depend: [Vault, Essentials]
 commands:
   rankup:
   rankupcost:
+  jointeam:
+  checklevel:
+  teststick:

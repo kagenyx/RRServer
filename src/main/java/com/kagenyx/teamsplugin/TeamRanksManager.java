@@ -97,8 +97,12 @@ public class TeamRanksManager {
 
     public UUID getTeamLeader(String teamName) {
         String uuidString = (String) json.get(teamName + "Leader");
+        if (uuidString == null || uuidString.isEmpty()) {
+            return null; // Retorna null se o UUID estiver vazio ou nulo
+        }
         return UUID.fromString(uuidString);
     }
+
 
     public String getPlayerTeam(UUID uuid) {
         String[] arr = {"Arcana","Tribunal"};
@@ -124,5 +128,26 @@ public class TeamRanksManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    // New method to add a provided UUID to each team
+    public void addUUIDToTeams(String uuidStr, String team) {
+        // Convert the provided UUID string to a UUID object
+        UUID newUUID = UUID.fromString(uuidStr);
+
+        // Check if the team exists in the JSON data
+        if (json.containsKey(team)) {
+            JSONArray uuidArray = (JSONArray) json.get(team);
+            uuidArray.add(newUUID.toString());
+            json.put(team, uuidArray);
+        } else {
+            JSONArray uuidArray = new JSONArray();
+            uuidArray.add(newUUID.toString());
+            json.put(team, uuidArray);
+        }
+
+
+        // Save the updated JSON data back to the file
+        saveToFile();
     }
 }

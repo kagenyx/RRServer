@@ -57,6 +57,9 @@ public class KeepItemListener implements Listener {
                     data.set(key, PersistentDataType.STRING, "TribunalStick");
                     is.setItemMeta(im);
                     e.getItemsToKeep().add(is);
+                    if(e.getDrops().contains(is)){
+                        e.getDrops().remove(is);
+                    }
                 }
             }
         }
@@ -69,6 +72,9 @@ public class KeepItemListener implements Listener {
                     data.set(key, PersistentDataType.STRING, "ArcanaBow");
                     is.setItemMeta(im);
                     e.getItemsToKeep().add(is);
+                    if(e.getDrops().contains(is)){
+                        e.getDrops().remove(is);
+                    }
                 }
             }
         }
