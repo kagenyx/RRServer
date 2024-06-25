@@ -22,8 +22,8 @@ public class CheckLevelCommand implements CommandExecutor {
         if(commandSender instanceof Player) {
             Player player = (Player) commandSender;
             if(this.plugin.getTrm().getPlayerTeam(player.getUniqueId()) != null) {
-                player.sendMessage(Component.text("A tua Equipa" +
-                                plugin.getTrm().getPlayerTeam(player.getUniqueId()) + "está no nível " + this.plugin.getTrm().getTeamRank(this.plugin.getTrm().getPlayerTeam(player.getUniqueId())))
+                player.sendMessage(Component.text("A tua Equipa " +
+                                plugin.getTrm().getPlayerTeam(player.getUniqueId()) + " está no nível " + this.plugin.getTrm().getTeamRank(this.plugin.getTrm().getPlayerTeam(player.getUniqueId())))
                         .color(NamedTextColor.GREEN));
             } else {
                 player.sendMessage(Component.text("Erro ao usar.").color(NamedTextColor.RED));

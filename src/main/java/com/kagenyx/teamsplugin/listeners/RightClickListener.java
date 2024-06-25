@@ -42,11 +42,11 @@ public class RightClickListener implements Listener {
         }
 
         Material clickedBlock = e.getClickedBlock().getType();
-        if (e.getAction().name().contains("RIGHT_CLICK_BLOCK") && clickedBlock == Material.WHITE_BANNER && e.getHand() == EquipmentSlot.HAND) {
+        if (e.getAction().name().contains("RIGHT_CLICK_BLOCK") && clickedBlock == Material.WHITE_BANNER && e.getHand() == EquipmentSlot.HAND && plugin.getTrm().getTeamRank("Tribunal") >=3) {
             if (isOnCooldown(p)) {
                 long cooldownTimeLeft = getCooldownTimeLeft(p);
                 String remainingTime = formatTime(cooldownTimeLeft);
-                p.sendMessage("You are on cooldown. Please wait " + remainingTime + " before using this again.");
+                p.sendMessage("Estás em cooldown. Por favor espera " + remainingTime + " antes de usares isto novamente.");
                 return;
             }
 

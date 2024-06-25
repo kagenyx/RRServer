@@ -14,8 +14,8 @@ import org.bukkit.entity.Player;
 public class RankCommand implements CommandExecutor {
 
     private final TeamsPlugin plugin;
-    private final static Double RANKUP_1_COST = 100000.00;
-    private final static Double RANKUP_2_COST = 800000.00;
+    private final static Double RANKUP_1_COST = 300000.00;
+    private final static Double RANKUP_2_COST = 1000000.00;
 
     public RankCommand(TeamsPlugin plugin) {
         this.plugin = plugin;
@@ -44,7 +44,7 @@ public class RankCommand implements CommandExecutor {
                 lvlup = 3;
                 break;
             default:
-                player.sendMessage("There was an error processing your request. Contact an Admin.");
+                player.sendMessage(Component.text("There was an error processing your request. Contact an Admin.").color(NamedTextColor.RED));
                 return false;
         }
 

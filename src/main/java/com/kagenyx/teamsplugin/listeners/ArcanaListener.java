@@ -2,13 +2,16 @@ package com.kagenyx.teamsplugin.listeners;
 
 import com.kagenyx.teamsplugin.TeamsPlugin;
 import org.bukkit.Material;
+import org.bukkit.entity.Fireball;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -87,6 +90,28 @@ public class ArcanaListener implements Listener {
                         break;
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void onBowShoot(EntityShootBowEvent event) {
+        if (event.getEntity() instanceof Player) {
+            Player player = (Player) event.getEntity();
+            if(this.plugin.getTrm().getPlayerTeam(player.getUniqueId()).equals("Arcana") && plugin.getTrm().getTeamRank("Arcana") == 3) {
+                ItemStack bow = event.getBow();
+
+                // Verifica se o item usado é um arco
+                if (bow != null && bow.getType() == Material.BOW) {
+                    // Cancela o evento de disparo da flecha
+                    event.setCancelled(true);
+
+                    // Cria um novo Fireball (Fire Charge)
+                    Fireball fireball = player.getWorld().spawn(event.getProjectile().getLocation(), Fireball.class);
+                    fireball.setShooter(player);
+                    fireball.setVelocity(event.getProjectile().getVelocity());
+                }
+            }
+
         }
     }
 }

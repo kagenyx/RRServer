@@ -24,9 +24,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import com.kagenyx.teamsplugin.TeamsPlugin;
 
-import java.util.HashMap;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 public class TribunalListener implements Listener {
     private final String TEAM_NAME = "Tribunal";
@@ -34,6 +32,27 @@ public class TribunalListener implements Listener {
     private TeamsPlugin plugin;
     private final String stickIdentifier = "TribunalStick";
     private HashMap<UUID,Long> cooldowns;
+
+    // Conjunto de minérios para verificação
+    private static final Set<Material> ORES = EnumSet.of(
+            Material.DIAMOND_ORE,
+            Material.EMERALD_ORE,
+            Material.GOLD_ORE,
+            Material.IRON_ORE,
+            Material.COAL_ORE,
+            Material.LAPIS_ORE,
+            Material.REDSTONE_ORE,
+            Material.NETHER_QUARTZ_ORE,
+            Material.DEEPSLATE_DIAMOND_ORE,
+            Material.DEEPSLATE_EMERALD_ORE,
+            Material.DEEPSLATE_GOLD_ORE,
+            Material.DEEPSLATE_IRON_ORE,
+            Material.DEEPSLATE_COAL_ORE,
+            Material.DEEPSLATE_LAPIS_ORE,
+            Material.DEEPSLATE_REDSTONE_ORE,
+            Material.NETHER_GOLD_ORE,
+            Material.ANCIENT_DEBRIS
+    );
 
     public TribunalListener(TeamsPlugin plugin, TeamRanksManager trm) {
         this.plugin = plugin;
@@ -76,50 +95,61 @@ public class TribunalListener implements Listener {
         }
     }
 
-    private boolean isPickaxe(Material material) {
-        return material == Material.WOODEN_PICKAXE ||
-                material == Material.STONE_PICKAXE ||
-                material == Material.IRON_PICKAXE ||
-                material == Material.GOLDEN_PICKAXE ||
-                material == Material.DIAMOND_PICKAXE ||
-                material == Material.NETHERITE_PICKAXE;
-    }
-
-    //Double Drops
     @EventHandler
-    public void onBlockBreak (BlockBreakEvent event) {
+    public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
-        if(trm.getPlayerTeam(player.getUniqueId()).equals(TEAM_NAME)) {
-            if(!player.getActiveItem().containsEnchantment(Enchantment.FORTUNE)) {
-                Random random = new Random();
-                int chance = random.nextInt(100)+1;
+        if (trm.getPlayerTeam(player.getUniqueId()).equals(TEAM_NAME)) {
+            ItemStack activeItem = player.getInventory().getItemInMainHand();
+            if (!activeItem.containsEnchantment(Enchantment.FORTUNE) && !activeItem.containsEnchantment(Enchantment.SILK_TOUCH) && isPickaxe(activeItem.getType())) {
                 Block block = event.getBlock();
-                ItemStack is = new ItemStack(block.getType());
-                switch (trm.getTeamRank(TEAM_NAME)){
-                    case 1:
-                        if(chance < 26) {
-                            player.getWorld().dropItemNaturally(block.getLocation(),is);
-                        }
-                        break;
-                    case 2:
-                        if(chance < 31) {
-                            player.getWorld().dropItemNaturally(block.getLocation(),is);
-                        }
-                        break;
-                    case 3:
-                        if(player.getUniqueId().equals(trm.getTeamLeader(TEAM_NAME))) {
-                            player.getWorld().dropItemNaturally(block.getLocation(),is);
+                if (isOre(block.getType())) { // Verifica se é um minério
+                    Random random = new Random();
+                    int chance = random.nextInt(100) + 1;
+                    Collection<ItemStack> drops = block.getDrops(activeItem);
+                    switch (trm.getTeamRank(TEAM_NAME)) {
+                        case 1:
+                            if (chance < 26) {
+                                for (ItemStack drop : drops) {
+                                    player.getWorld().dropItemNaturally(block.getLocation(), drop);
+                                }
+                            }
                             break;
-                        }
-                        if(chance < 51) {
-                            player.getWorld().dropItemNaturally(block.getLocation(),is);
-                        }
-                        break;
-                    default:
-                        break;
+                        case 2:
+                            if (chance < 31) {
+                                for (ItemStack drop : drops) {
+                                    player.getWorld().dropItemNaturally(block.getLocation(), drop);
+                                }
+                            }
+                            break;
+                        case 3:
+                            if (player.getUniqueId().equals(trm.getTeamLeader(TEAM_NAME))) {
+                                for (ItemStack drop : drops) {
+                                    player.getWorld().dropItemNaturally(block.getLocation(), drop);
+                                }
+                                break;
+                            }
+                            if (chance < 51) {
+                                for (ItemStack drop : drops) {
+                                    player.getWorld().dropItemNaturally(block.getLocation(), drop);
+                                }
+                            }
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         }
+    }
+
+    private boolean isPickaxe(Material material) {
+        return material == Material.WOODEN_PICKAXE || material == Material.STONE_PICKAXE ||
+                material == Material.IRON_PICKAXE || material == Material.GOLDEN_PICKAXE ||
+                material == Material.DIAMOND_PICKAXE || material == Material.NETHERITE_PICKAXE;
+    }
+
+    private boolean isOre(Material material) {
+        return ORES.contains(material);
     }
 
     //Stick
@@ -132,7 +162,7 @@ public class TribunalListener implements Listener {
         Player hitter = (Player) e.getDamager();
         Player hitten = (Player) e.getEntity();
 
-        ItemStack mainHandItem = hitten.getInventory().getItemInMainHand();
+        ItemStack mainHandItem = hitter.getInventory().getItemInMainHand();
         if (isTribunalStick(mainHandItem)) {
             if (trm.getPlayerTeam(hitten.getUniqueId()).equals(trm.getPlayerTeam(hitter.getUniqueId()))) {
                 int speedDuration = 1200; // Default duration for speed effect
@@ -152,7 +182,7 @@ public class TribunalListener implements Listener {
 
                     if (timeSinceLastUse < cooldownTime) {
                         long timeLeft = (cooldownTime - timeSinceLastUse) / 1000; // Tempo restante em segundos
-                        hitter.sendMessage(Component.text("Tens de esperar " + timeLeft + 1 + " segundos antes de usares o Stick novamente!").color(NamedTextColor.RED));
+                        hitter.sendMessage(Component.text("Tens de esperar " + (timeLeft + 1) + " segundos antes de usares o Stick novamente!").color(NamedTextColor.RED));
                         e.setCancelled(true);
                         return;
                     }
@@ -168,7 +198,7 @@ public class TribunalListener implements Listener {
                 // 0: nada, 1: invocar lobos, 2: invocar raio, 3: invocar ambos
                 if (action == 1 || action == 3) {
                     for (int i = 0; i < 2; i++) {
-                        Wolf wolf = hitten.getWorld().spawn(hitten.getLocation(), Wolf.class);
+                        Wolf wolf = hitten.getWorld().spawn(hitter.getLocation(), Wolf.class);
                         wolf.setOwner(hitter);
                         wolf.setTarget(hitten);
                         wolf.setHealth(4.0);

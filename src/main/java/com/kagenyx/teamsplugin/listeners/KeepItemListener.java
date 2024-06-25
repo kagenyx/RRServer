@@ -1,8 +1,10 @@
 package com.kagenyx.teamsplugin.listeners;
 
 import com.kagenyx.teamsplugin.TeamsPlugin;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -55,6 +57,7 @@ public class KeepItemListener implements Listener {
                 if (im != null) {
                     PersistentDataContainer data = im.getPersistentDataContainer();
                     data.set(key, PersistentDataType.STRING, "TribunalStick");
+                    im.displayName(Component.text("Tribunal Stick"));
                     is.setItemMeta(im);
                     e.getItemsToKeep().add(is);
                     if(e.getDrops().contains(is)){
@@ -70,6 +73,8 @@ public class KeepItemListener implements Listener {
                 if (im != null) {
                     PersistentDataContainer data = im.getPersistentDataContainer();
                     data.set(key, PersistentDataType.STRING, "ArcanaBow");
+                    im.displayName(Component.text("Arcana Bow"));
+                    im.addEnchant(Enchantment.INFINITY,1,false);
                     is.setItemMeta(im);
                     e.getItemsToKeep().add(is);
                     if(e.getDrops().contains(is)){

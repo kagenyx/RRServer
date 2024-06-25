@@ -61,29 +61,37 @@ public final class TeamsPlugin extends JavaPlugin {
                     } else {
                         player.addPotionEffect(new PotionEffect(PotionEffectType.HASTE, 43, -1 + trm.getTeamRank("Tribunal")));
                     }
-                    if(lastTimeTribunalDeath != null) {
-                        Calendar currentTime = Calendar.getInstance();
-                        long timeDifferenceMillis = currentTime.getTimeInMillis() - lastTimeTribunalDeath.getTimeInMillis();
-                        long timeDifferenceHours = timeDifferenceMillis / (1000 * 60 * 60);
-                        if (timeDifferenceHours < 2 && lastTimeTribunalDeath != null) {
-                            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(16.0);
+                    if(trm.getTeamRank("Tribunal")>=2) {
+                        if(lastTimeTribunalDeath != null) {
+                            Calendar currentTime = Calendar.getInstance();
+                            long timeDifferenceMillis = currentTime.getTimeInMillis() - lastTimeTribunalDeath.getTimeInMillis();
+                            long timeDifferenceHours = timeDifferenceMillis / (1000 * 60 * 60);
+                            if (timeDifferenceHours < 2 && lastTimeTribunalDeath != null) {
+                                player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(16.0);
 
+                            } else {
+                                player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20.0);
+                            }
                         } else {
                             player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20.0);
                         }
-                    } else {
-                        player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20.0);
                     }
                 }
             }
 
             // Check if Tribunal players are together
-            for (Player player : tribunal_players) {
-                boolean together = tribunal_players.stream().anyMatch(otherPlayer -> !otherPlayer.equals(player) && otherPlayer.getLocation().distance(player.getLocation()) <= 15);
-                if (together) {
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.HASTE, 43, 0, true, false, true));
+            if(trm.getTeamRank("Tribunal")>=2){
+                for (Player player : tribunal_players) {
+                    boolean together = tribunal_players.stream().anyMatch(otherPlayer -> !otherPlayer.equals(player) && otherPlayer.getLocation().distance(player.getLocation()) <= 15);
+                    if (together) {
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.HASTE, 43, 0, true, false, true));
+                    }
                 }
+
             }
+
+
+
 
             //ARCANA
             LinkedList<UUID> arcana_uuids = trm.extractUUIDs("Arcana");
@@ -93,32 +101,36 @@ public final class TeamsPlugin extends JavaPlugin {
                 Player player = Bukkit.getPlayer(uuid);
                 if (player != null) {
                     arcana_players.add(player);
-
-
-                    if(!lastTimeArcanaMagic.containsKey(player.getUniqueId()) || lastTimeArcanaMagic.get(player.getUniqueId()) > 2400) {
-                        player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(18.0);
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.UNLUCK, 43, 0));
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 43, 0));
-                    }
-                    else {
-                        player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20.0);
-                        player.removePotionEffect(PotionEffectType.WEAKNESS);
-                        player.removePotionEffect(PotionEffectType.UNLUCK);
+                    if(trm.getTeamRank("Arcana")>=2) {
+                        if(!lastTimeArcanaMagic.containsKey(player.getUniqueId()) || lastTimeArcanaMagic.get(player.getUniqueId()) > 2400) {
+                            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(18.0);
+                            player.addPotionEffect(new PotionEffect(PotionEffectType.UNLUCK, 43, 0));
+                            player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 43, 0));
+                        }
+                        else {
+                            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20.0);
+                            player.removePotionEffect(PotionEffectType.WEAKNESS);
+                            player.removePotionEffect(PotionEffectType.UNLUCK);
+                        }
                     }
                 }
             }
             for (Player uuid : arcana_players) {
                 System.out.println(uuid.getName());
-                if(lastTimeArcanaMagic.containsKey(uuid.getUniqueId())) {
-                    lastTimeArcanaMagic.replace(uuid.getUniqueId(), lastTimeArcanaMagic.get(uuid.getUniqueId()) + 2);
+                if(trm.getTeamRank("Arcana")>=2) {
+                    if(lastTimeArcanaMagic.containsKey(uuid.getUniqueId())) {
+                        lastTimeArcanaMagic.replace(uuid.getUniqueId(), lastTimeArcanaMagic.get(uuid.getUniqueId()) + 2);
+                    }
                 }
             }
             // Check if Arcana players are together
             for (Player player : arcana_players) {
-                boolean together = arcana_players.stream().anyMatch(otherPlayer -> !otherPlayer.equals(player) && otherPlayer.getLocation().distance(player.getLocation()) <= 15);
-                if (together) {
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP_BOOST, 43, 0, true, false, true));
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 43, 1, true, false, true));
+                if(trm.getTeamRank("Arcana")>=2) {
+                    boolean together = arcana_players.stream().anyMatch(otherPlayer -> !otherPlayer.equals(player) && otherPlayer.getLocation().distance(player.getLocation()) <= 15);
+                    if (together) {
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP_BOOST, 43, 0, true, false, true));
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 43, 1, true, false, true));
+                    }
                 }
             }
 
